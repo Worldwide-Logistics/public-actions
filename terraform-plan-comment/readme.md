@@ -3,7 +3,7 @@ This action will create a github comment on a pull request given information fro
 
 ## Inputs
 | input             | required              | description                                                                               |
-| ----------------- | --------------------- | ----------------------------------------------------------------------------------------- |
+| ----------------- | :-------------------: | ----------------------------------------------------------------------------------------- |
 | github_token      | :heavy_check_mark:    | The github secret to use to create a comment, usually this is `secrets.GITHUB_SECRET`     |
 | plan_output       |                       | The standard **output** of the plan step to include in the comment.                       |
 | plan_outcome      |                       | The **outcome** of the plan step. This is usually SUCESS OR FAILED                        |
