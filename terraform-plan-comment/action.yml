@@ -1,0 +1,68 @@
+name: Worldwide-Logistics -  Terraform Plan Comment
+description: Create a Pull Request comment with the output of terraform plan
+author: Worldwide-Logistics
+inputs:
+  github_token:
+    description: secret for accessing github
+    required: true
+  plan_output:
+    description: The resulting output of the terraform plan step
+    default: ""
+    required: false
+  plan_outcome:
+    description: The resulting outcome of the terraform plan step
+    default: ""
+    required: false
+  format_outcome:
+    description: resulting outcome from terraform fmt
+    default: ""
+    required: false
+  init_outcome:
+    description: resulting outcome from terraform init
+    default: ""
+    required: false
+  validate_outcome:
+    description: resulting outcome from terraform init
+    default: ""
+    required: false
+  validate_output:
+    description: resulting output from terraform validate
+    default: ""
+    required: false
+runs:
+  using: composite
+  steps:
+    - uses: actions/github-script@v6
+      env:
+        PLAN: "terraform\n${{ inputs.plan_output }}"
+      with:
+        github-token: ${{ inputs.github_token }}
+        script: |
+          const output = `#### Terraform Format and Style 🖌\`${{ inputs.format_outcome }}\`
+          #### Terraform Initialization ⚙️\`${{ inputs.init_outcome }}\`
+          #### Terraform Validation 🤖\`${{ inputs.validate_outcome }}\`
+          <details><summary>Validation Output</summary>
+
+          \`\`\`\n
+          ${{ inputs.validate_output }}
+          \`\`\`
+
+          </details>
+
+          #### Terraform Plan 📖\`${{ inputs.plan_outcome }}\`
+
+          <details><summary>Show Plan</summary>
+
+          \`\`\`\n
+          ${process.env.PLAN}
+          \`\`\`
+
+          </details>
+          `;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
