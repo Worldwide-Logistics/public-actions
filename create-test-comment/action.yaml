@@ -1,0 +1,38 @@
+name: Worldwide-Logistics -  Create Test Comment
+description: Create a Pull Request comment with the output of a test command
+author: Worldwide-Logistics
+inputs:
+  github_token:
+    description: secret for accessing github
+    required: true
+  test_output:
+    description: The resulting output of the test step
+    default: ""
+    required: false
+  test_outcome:
+    description: The resulting outcome of the test step
+    default: ""
+    required: false
+runs:
+  using: composite
+  steps:
+    - uses: actions/github-script@v6
+      with:
+        github-token: ${{ inputs.github_token }}
+        script: |
+          const output = `#### Tests Result 🖌\`${{ inputs.test_outcome }}\`
+          <details><summary>Test Output</summary>
+
+          \`\`\`\n
+          ${{ inputs.test_output }}
+          \`\`\`
+
+          </details>
+          `;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
